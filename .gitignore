@@ -1,0 +1,7 @@
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+
+# Generated outputs (stage1/stage2 validation artifacts)
+*.png

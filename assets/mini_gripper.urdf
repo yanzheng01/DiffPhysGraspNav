@@ -1,0 +1,137 @@
+<?xml version="1.0"?>
+<!--
+  Minimal parallel-jaw gripper for grasp_detector validation (stage2.md).
+
+  Kinematic chain (all joints prismatic, base fixed to the world):
+      base_link -> [lift_joint, axis +Z] -> gripper_base
+                   [left_finger_joint, axis -Y] -> left_finger_link
+                   [right_finger_joint, axis +Y] -> right_finger_link
+
+  Layout at zero configuration (robot spawned at (0.5, 0, 0.10), cube of
+  size 0.04 centered at (0.5, 0, 0.0205) on the ground plane):
+    - gripper_base plate at z = 0.10 + q_lift (grasp height at q_lift = 0);
+    - finger inner faces at y = +-(0.035 - q_f): q_f = 0 open (15 mm gap
+      per side), contact at q_f = 0.015, firm grasp at q_f ~ 0.018;
+    - fingers span z in [0.01, 0.09] at q_lift = 0, covering the cube.
+  Positive finger q = closing for both fingers.
+-->
+<robot name="mini_gripper">
+
+  <!-- ======== base_link: world anchor (fixed base) ======== -->
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.5"/>
+      <inertia ixx="1e-5" ixy="0" ixz="0" iyy="1e-5" iyz="0" izz="1e-5"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.08 0 0.06" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.012 0.012 0.012"/>
+      </geometry>
+      <material name="grey">
+        <color rgba="0.6 0.6 0.6 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.08 0 0.06" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.012 0.012 0.012"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- ======== lift stage ======== -->
+  <joint name="lift_joint" type="prismatic">
+    <parent link="base_link"/>
+    <child link="gripper_base"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="0.0" upper="0.30" effort="300" velocity="1.0"/>
+  </joint>
+  <link name="gripper_base">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.3"/>
+      <inertia ixx="5e-4" ixy="0" ixz="0" iyy="3e-4" iyz="0" izz="7e-4"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.10 0.14 0.02"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0.3 0.45 0.75 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.10 0.14 0.02"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- ======== left finger ======== -->
+  <joint name="left_finger_joint" type="prismatic">
+    <parent link="gripper_base"/>
+    <child link="left_finger_link"/>
+    <origin xyz="0 0.04 -0.05" rpy="0 0 0"/>
+    <axis xyz="0 -1 0"/>
+    <limit lower="0.0" upper="0.035" effort="50" velocity="0.2"/>
+  </joint>
+  <link name="left_finger_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia ixx="2.7e-5" ixy="0" ixz="0" iyy="3.0e-5" iyz="0" izz="4.2e-6"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.03 0.01 0.08"/>
+      </geometry>
+      <material name="green">
+        <color rgba="0.35 0.7 0.4 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.03 0.01 0.08"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- ======== right finger ======== -->
+  <joint name="right_finger_joint" type="prismatic">
+    <parent link="gripper_base"/>
+    <child link="right_finger_link"/>
+    <origin xyz="0 -0.04 -0.05" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="0.0" upper="0.035" effort="50" velocity="0.2"/>
+  </joint>
+  <link name="right_finger_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia ixx="2.7e-5" ixy="0" ixz="0" iyy="3.0e-5" iyz="0" izz="4.2e-6"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.03 0.01 0.08"/>
+      </geometry>
+      <material name="red">
+        <color rgba="0.8 0.35 0.35 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.03 0.01 0.08"/>
+      </geometry>
+    </collision>
+  </link>
+
+</robot>
